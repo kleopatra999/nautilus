@@ -46,8 +46,8 @@
 #include "nautilus-window-manage-views.h"
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
+#include "nautilus-dbus-manager.h"
 
-#include <libnautilus-private/nautilus-dbus-manager.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
@@ -398,6 +398,16 @@ open_windows (NautilusApplication *application,
 			open_window (application, startup_id, uris[i], screen, geometry);
 		}
 	}
+}
+
+void show_files (NautilusApplication *application,
+	         char *startup_id,
+	         char **uris,
+	         GdkScreen *screen,
+	         const char *geometry)
+{
+
+	open_windows (application, startup_id, uris, screen, geometry);
 }
 
 static gboolean 

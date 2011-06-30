@@ -76,5 +76,6 @@ NautilusWindow *     nautilus_application_create_window (NautilusApplication *ap
 							 GdkScreen           *screen);
 
 void nautilus_application_close_all_windows (NautilusApplication *self);
+void show_files (NautilusApplication *application, char *startup_id, char **uris, GdkScreen *screen, const char *geometry);
 
 #endif /* __NAUTILUS_APPLICATION_H__ */
