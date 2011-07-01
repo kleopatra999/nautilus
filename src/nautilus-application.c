@@ -400,14 +400,12 @@ open_windows (NautilusApplication *application,
 	}
 }
 
-void show_files (NautilusApplication *application,
-	         char *startup_id,
-	         char **uris,
-	         GdkScreen *screen,
-	         const char *geometry)
+void nautilus_application_show_files (NautilusApplication *self, 
+	                              const char *startup_id,
+	                              char **uris)
 {
-
-	open_windows (application, startup_id, uris, screen, geometry);
+	gchar *geometry = NULL;
+	open_windows (self, startup_id, uris, gdk_screen_get_default (), geometry);
 }
 
 static gboolean 
