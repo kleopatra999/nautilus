@@ -66,6 +66,8 @@ nautilus_SOURCES = \
 	nautilus-connect-server-dialog-nonmain.c \
 	nautilus-connect-server-operation.c	\
 	nautilus-connect-server-operation.h	\
+	nautilus-dbus-manager.c			\
+	nautilus-dbus-manager.h			\
 	nautilus-desktop-icon-view.c		\
 	nautilus-desktop-icon-view.h		\
 	nautilus-desktop-item-properties.c	\

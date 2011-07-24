@@ -34,6 +34,7 @@
 #include "nautilus-empty-view.h"
 #endif /* ENABLE_EMPTY_VIEW */
 
+#include "nautilus-dbus-manager.h"
 #include "nautilus-desktop-icon-view.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-icon-view.h"
@@ -47,7 +48,6 @@
 #include "nautilus-window-private.h"
 #include "nautilus-window-slot.h"
 
-#include <libnautilus-private/nautilus-dbus-manager.h>
 #include <libnautilus-private/nautilus-desktop-link-monitor.h>
 #include <libnautilus-private/nautilus-directory-private.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
