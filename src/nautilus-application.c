@@ -400,6 +400,15 @@ open_windows (NautilusApplication *application,
 	}
 }
 
+void 
+nautilus_application_show_files (NautilusApplication *self, 
+				 const char *startup_id,
+				 char **uris)
+{
+	gchar *geometry = NULL;
+	open_windows (self, startup_id, uris, gdk_screen_get_default (), geometry);
+}
+
 static gboolean 
 nautilus_application_save_accel_map (gpointer data)
 {
