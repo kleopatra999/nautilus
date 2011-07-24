@@ -48,6 +48,20 @@ static const gchar introspection_xml[] =
   "      <arg type='s' name='DestinationDisplayName' direction='in'/>"
   "    </method>"
   "  </interface>"
+  "  <interface name='org.gnome.Nautilus.FileManager1'>"
+  "    <method name='ShowURIs'>"
+  "      <arg type='as' name='Uris' direction='in'/>"
+  "      <arg type='s' name='StartupId' direction='in'/>"
+  "    </method>"
+  "    <method name='SelectURIs'>"
+  "      <arg type='as' name='Uris' direction='in'/>"
+  "      <arg type='s' name='StartupId' direction='in'/>"
+  "    </method>" 
+  "    <method name='ShowProperties'>"
+  "      <arg type='as' name='Uris' direction='in'/>"
+  "      <arg type='s' name='StartupId' direction='in'/>"
+  "    </method>"
+  "  </interface>"
   "</node>";
 
 typedef struct _NautilusDBusManager NautilusDBusManager;
@@ -182,6 +196,24 @@ static void
 trigger_empty_trash_operation (void)
 {
   nautilus_file_operations_empty_trash (NULL);
+}
+
+static void
+trigger_show_uris_operation (char **uris,
+                             const char *startup_id)
+{
+}
+
+static void
+trigger_select_uris_operation (char **uris,
+                               const char *startup_id)
+{
+}
+
+static void
+trigger_show_properties_operation (char **uris,
+                                   const char *startup_id)
+{
 }
 
 static void
