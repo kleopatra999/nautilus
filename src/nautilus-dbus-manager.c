@@ -23,7 +23,10 @@
 
 #include <config.h>
 
+#include "nautilus-application.h"
 #include "nautilus-dbus-manager.h"
+#include "nautilus-properties-window.h"
+#include "nautilus-window.h"
 
 #include <libnautilus-private/nautilus-file-operations.h>
 
@@ -200,20 +203,43 @@ trigger_empty_trash_operation (void)
 
 static void
 trigger_show_uris_operation (char **uris,
-                             const char *startup_id)
+                             const char *startup_id, 
+                             NautilusApplication *application)
 {
 }
 
 static void
 trigger_select_uris_operation (char **uris,
-                               const char *startup_id)
+                               const char *startup_id,
+                               NautilusApplication *application)
 {
 }
 
 static void
 trigger_show_properties_operation (char **uris,
-                                   const char *startup_id)
+                                   const char *startup_id,
+                                   NautilusApplication *application)
 {
+  GList *source_files = NULL;
+  NautilusWindow *window;
+  gint idx;
+  
+  if (uris == NULL || uris[0] == NULL || startup_id == NULL)
+    {
+      DEBUG ("Called 'ShowProperties' with NULL arguments, discarding");
+      return;
+    }
+
+  window = nautilus_application_create_window (application,
+                                               startup_id, 
+                                               gdk_screen_get_default ());
+
+  for (idx = 0; uris[idx] != NULL; idx++)
+    {
+      source_files = g_list_prepend (NULL,
+								     nautilus_file_get_by_uri (uris[idx]));
+      nautilus_properties_window_present (source_files, GTK_WIDGET (window));
+    }
 }
 
 static void
@@ -226,6 +252,9 @@ handle_method_call (GDBusConnection *connection,
                     GDBusMethodInvocation *invocation,
                     gpointer user_data)
 {
+  NautilusDBusManager *self = user_data;
+  NautilusApplication *application = (NautilusApplication *) self->application;
+
   DEBUG ("Handle method, sender %s, object_path %s, interface %s, method %s",
          sender, object_path, interface_name, method_name);
 
@@ -264,6 +293,45 @@ handle_method_call (GDBusConnection *connection,
 
       DEBUG ("Called CopyFile with source %s, dest dir %s and dest name %s", source_uri, destination_dir,
              destination_name);
+
+      goto out;
+    }
+
+  if (g_strcmp0 (method_name, "ShowURIs") == 0)
+    {
+      char **uris = NULL;
+      const char *startup_id;
+
+      g_variant_get (parameters, "(^a&s&s)", &uris, &startup_id);
+      trigger_show_uris_operation (uris, startup_id, application);
+
+      DEBUG ("Called ShowURIs with startup_id %s and uri %s\n", startup_id, uris[0]);
+
+      goto out;
+    }
+
+    if (g_strcmp0 (method_name, "SelectURIs") == 0)
+    {
+      char **uris = NULL;
+      const char *startup_id;
+
+      g_variant_get (parameters, "(^a&s&s)", &uris, &startup_id);
+      trigger_select_uris_operation (uris, startup_id, application);
+
+      DEBUG ("Called SelectURIs with startup_id %s and uri %s\n", startup_id, uris[0]);
+
+      goto out;
+    }
+	
+    if (g_strcmp0 (method_name, "ShowProperties") == 0)
+    {
+      char **uris = NULL;
+      const char *startup_id;
+
+      g_variant_get (parameters, "(^a&s&s)", &uris, &startup_id);
+      trigger_show_properties_operation (uris, startup_id, application);
+
+      DEBUG ("Called ShowProperties with startup_id %s and uri %s\n", startup_id, uris[0]);
 
       goto out;
     }
@@ -309,6 +377,12 @@ bus_acquired_handler_cb (GDBusConnection *conn,
   self->registration_id = g_dbus_connection_register_object (conn,
                                                              "/org/gnome/Nautilus",
                                                              introspection_data->interfaces[0],
+                                                             &interface_vtable,
+                                                             self,
+                                                             NULL, &error);
+  self->registration_id = g_dbus_connection_register_object (conn,
+                                                             "/org/gnome/Nautilus",
+                                                             introspection_data->interfaces[1],
                                                              &interface_vtable,
                                                              self,
                                                              NULL, &error);
