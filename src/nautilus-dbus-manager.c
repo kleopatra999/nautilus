@@ -220,6 +220,13 @@ trigger_select_uris_operation (char **uris,
                                const char *startup_id,
                                NautilusApplication *application)
 {
+  if (uris == NULL || uris[0] == NULL || startup_id == NULL)
+    {
+      DEBUG ("Called 'SelectURIs' with NULL arguments, discarding");
+      return;
+    }
+
+  nautilus_application_show_files (application, startup_id, uris);
 }
 
 static void
